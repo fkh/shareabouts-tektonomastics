@@ -36,17 +36,16 @@ map:
     maxZoom: 17
     scrollWheelZoom: false
   layers:
-     - type: mapbox
-       style: mapbox://styles/mapbox/streets-v8
-       accessToken: pk.eyJ1Ijoib3BlbnBsYW5zIiwiYSI6ImZRQzRPYnMifQ.f75KI3Q9rFXRY2Zciz6DKw
+    - url: https://api.mapbox.com/styles/v1/miamipsc/cizrpvslt001f2snsjc6i6xn4/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWlhbWlwc2MiLCJhIjoiY2l5N3RjY202MDA4ajJ3cW05ZGg1eDloOCJ9.7Q8BG1yF7iHPASyYFp0hsg
+
 
 # The keys show up in the dropdown list when you are adding a new place
 # The values map the place type to map icons (defined below).
 place_types:
-  landmark:
-    label: _(Landmark)
+  building:
+    label: _(Building)
     rules:
-      - condition: '"{{location_type}}" === "landmark" && {{map.zoom}} < 13 && {{layer.focused}} === false'
+      - condition: '"{{location_type}}" === "building" && {{map.zoom}} < 13 && {{layer.focused}} === false'
         # Display landmarks as circles (vectors) when zoomed out
 
         style:
@@ -56,7 +55,7 @@ place_types:
           opacity: 0.9
           fillOpacity: 1
 
-      - condition: '"{{location_type}}" === "landmark" && {{map.zoom}} >= 13 && {{layer.focused}} === false'
+      - condition: '"{{location_type}}" === "building" && {{map.zoom}} >= 13 && {{layer.focused}} === false'
         # Display landmarks as icons when zoomed in
 
         icon:
@@ -64,7 +63,7 @@ place_types:
           iconSize: [17, 18]
           iconAnchor: [9, 9]
 
-      - condition: '"{{location_type}}" === "landmark" && {{layer.focused}} === true'
+      - condition: '"{{location_type}}" === "building" && {{layer.focused}} === true'
         # Display landmarks as icons when zoomed in
 
         icon:
@@ -73,76 +72,6 @@ place_types:
           iconSize: [25, 41]
           shadowSize: [41, 41]
           iconAnchor: [12, 41]
-
-  park:
-    label: _(Park)
-    rules:
-      - condition: '"{{location_type}}" === "park" && {{layer.focused}}'
-        # Show parks that are points as icons...
-
-        icon:
-          iconUrl: /static/css/images/markers/marker-4bbd45.png
-          shadowUrl: /static/css/images/marker-shadow.png
-          iconSize: [25, 41]
-          shadowSize: [41, 41]
-          iconAnchor: [12, 41]
-
-        # ...and parks that are polygons as shapes.
-
-        style:
-          color: '#4bbd45'
-          weight: 3
-          opacity: 0.9
-          fillOpacity: 0.7
-
-      - condition: '"{{location_type}}" === "park"'
-        # Show parks that are points as icons...
-
-        icon:
-          iconUrl: /static/css/images/markers/dot-4bbd45.png
-          iconSize: [17, 18]
-          iconAnchor: [9, 9]
-
-        # ...and parks that are polygons as shapes.
-
-        style:
-          color: '#4bbd45'
-          weight: 1
-          opacity: 0.9
-          fillOpacity: 0.4
-
-  school:
-    label: _(School)
-    rules:
-      - condition: '"{{location_type}}" === "school" && {{submission_sets.comments.length}} > 0'
-        # Display schools as circles
-
-        style:
-          color: '#f95016'
-          radius: 8
-          weight: 4
-          opacity: 0.9
-          fillOpacity: 0.4
-        focus_style:
-          color: '#f95016'
-          radius: 16
-          weight: 4
-          opacity: 0.9
-          fillOpacity: 0.4
-
-      - condition: '"{{location_type}}" === "school"'
-        style:
-          color: '#f95016'
-          radius: 8
-          weight: 1
-          opacity: 0.9
-          fillOpacity: 0.4
-        focus_style:
-          color: '#f95016'
-          radius: 16
-          weight: 1
-          opacity: 0.9
-          fillOpacity: 0.4
 
 
 activity:
@@ -155,93 +84,62 @@ place:
   adding_supported:
     from: '2017-03-07 00:00 -0500'   # Daylight savings begins mid-March
     until: '2021-04-07 00:00 -0400'  # and ends mid-October.
-  add_button_label: _(Add a Place)
+  add_button_label: _(Add a named building)
   # Labels for the buttons that toggle the map and list views
-  show_list_button_label: _(List All Places)
+  show_list_button_label: _(List All Buildings)
   show_map_button_label: _(Show the Map)
   action_text: _(added)
-  title: _(Tell us more...)
-  action_text: _(created)
+  title: _(Building details)
+  action_text: _(added)
   anonymous_name: _(Someone)
   submit_button_label: _(Submit)
 
-  location_item_name: location
+  location_item_name: building
 
   items:
+    - prompt: _(Building name)
+      type: text
+      name: name
+      attrs:
+        - key: size
+          value: 30
+    - prompt: _(Street address)
+      type: text
+      name: address_street
+      attrs:
+        - key: size
+          value: 30
+    - prompt: _(City)
+      type: text
+      name: address_city
+      attrs:
+        - key: size
+          value: 30
+    - prompt: _(State)
+      type: text
+      name: address_state
+      attrs:
+        - key: size
+          value: 2
     - prompt: _(Your Name)
       type: text
       name: submitter_name
-      optional: true
       sticky: true
       attrs:
-        - key: placeholder
-          value: _(Name)
         - key: size
           value: 30
     - prompt: _(Your Email)
       type: text
       name: private-submitter_email
-      optional: true
       sticky: true
       attrs:
-        - key: placeholder
-          value: _(Email address)
         - key: size
           value: 30
-    - prompt: _(Location Name)
-      type: text
-      name: name
-      optional: true
-      attrs:
-        - key: placeholder
-          value: _(Location Name)
-        - key: size
-          value: 30
-    - prompt: _(Location Type)
-      type: select
-      options:
-        - label: _(Choose One)
-          value: ''
-        - label: _(Landmark)
-          value: landmark
-        - label: _(Park)
-          value: park
-        - label: _(School)
-          value: school
+    - type: hidden
       name: location_type
       attrs:
-        - key: required
-    - prompt: _(Yes or no question)
-      type: radiogroup
-      options:
-        - label: _(Indeed)
-          value: yeah
-        - label: _(I don't think so)
-          value: nah
-      name: y_or_n
-      attrs:
-        - key: required
-    - prompt: _(All that apply questiion)
-      type: checkboxgroup
-      options:
-        - label: _(First)
-          value: option1
-        - label: _(Second)
-          value: option2
-        - label: _(Third)
-          value: option3
-        - label: _(Fourth)
-          value: option4
-      name: all_that_apply
-      attrs:
-        - key: required
-    - prompt: _(Description)
-      type: textarea
-      name: description
-      optional: true
-      attrs:
-        - key: placeholder
-          value: _(Description...)
+        - key: value
+          value: building
     - prompt: _(Image)
       inputfile_label: _(Add an Image)
       type: file
@@ -251,9 +149,10 @@ place:
         - key: accept
           value: image/*
 
+
 survey:
   submission_type: comments
-  adding_supported: true
+  adding_supported: false
 
   # Response config
   show_responses: true
@@ -306,7 +205,7 @@ survey:
 
 support:
   submission_type: support
-  adding_supported: true
+  adding_supported: false
   submit_btn_text: _(Support)
   response_name: _(support)
   response_plural_name: _(supports)
